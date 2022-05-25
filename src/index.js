@@ -1,38 +1,60 @@
 //fetch the data from the server
-const ramen = fetch('http://localhost:3000/ramens').then(res => res.json()).then(data => console.log(data));
-
-const ramen1 = fetch('http://localhost:3000/ramens/1').then(res => res.json()).then(data => console.log(data));
-
-//console.log(ramen1)
-
 //display images for each ramen using an img tag inside #ramen-men div
-    //create img tags
-    //add images to new tags
+const ramen = () => {
+    fetch('http://localhost:3000/ramens')
+    .then(res => res.json())
+    .then(data => {
+        //console.log(data)
+        data.forEach(OneImage)
+    })
+}
+ramen()
 
-const ramenMenu = document.querySelector('#ramen-menu');
-const image = document.createElement('img');
-image.src = './assets/ramen/shoyu.jpg';
-ramenMenu.appendChild(image);
+const OneImage = (oneRamen) => {
+    const ramenMenu = document.querySelector('#ramen-menu');
+    const pic = document.createElement('img');
+    pic.src = oneRamen.image;
+    ramenMenu.append(pic);
+    
+    //listen for click on image in #ramen-menu
+    //the ramen that was clicked on should appear on the ramen details and the comments and rating
+    pic.addEventListener('click', () => {
+        //console.log('clicked')
+        //const imageToUpdate = document.getElementsByClassName('detail-image')[0]
+        const imageToUpdate = document.querySelector('#ramen-detail img.detail-image')
+        imageToUpdate.src = oneRamen.image
 
-const image1 = document.createElement('img');
-image1.src = './assets/ramen/naruto.jpg';
-ramenMenu.appendChild(image1);
+        const nameToUpdate = document.querySelector('#ramen-detail h2.name')
+        nameToUpdate.textContent = oneRamen.name
 
-const image2 = document.createElement('img');
-image2.src = './assets/ramen/nirvana.jpg';
-ramenMenu.appendChild(image2);
+        const restaurantToUpdate = document.querySelector('#ramen-detail h3.restaurant')
+        restaurantToUpdate.textContent = oneRamen.restaurant
 
-const image3 = document.createElement('img');
-image3.src = './assets/ramen/gyukotsu.jpg';
-ramenMenu.appendChild(image3);
+        const ratingToUpdate = document.querySelector('#rating-display')
+        ratingToUpdate.textContent = oneRamen.rating
 
-const image4 = document.createElement('img');
-image4.src = './assets/ramen/kojiro.jpg';
-ramenMenu.appendChild(image4);
+        const commentToUpdate = document.querySelector('#comment-display')
+        commentToUpdate.textContent = oneRamen.comment
+    })
+}
 
-//forEach loop(ramen)
-// Array.from(ramen).forEach(function() {
-//     const image = document.createElement('img');
-//     image.src = ramen.image;
-//     document.querySelector('#ramen-menu').appendChild(image);
-// });
+//Create a new ramen after submitting the new-ramen form. 
+//The new ramen should be added to the#ramen-menu div. The new ramen does not need to persist; in other words, if you refresh the page, it's okay that the new ramen is no longer on the page.
+document.querySelector('#new-ramen').addEventListener('submit',(e)=>{
+    e.preventDefault()
+    //console.log("submitted")
+    //grab target by name using dot notation (without hyphen)
+    //console.log(e.target.name.value)
+    //grab target by id using bracket notation(with hyphen)
+    //console.log(e.target['new-name'].value)
+    
+    const newRamen = {
+        name: e.target.name.value,
+        restaurant:e.target.restaurant.value,
+        image: e.target.image.value,
+        rating: e.target.rating.value,
+        comment:e.target['new-comment'].value,
+    }
+    console.log(newRamen)
+    OneImage(newRamen)
+})
